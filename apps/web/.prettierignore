@@ -1,0 +1,5 @@
+*.tsbuildinfo
+.github/
+build/
+node_modules/
+storybook-static/
