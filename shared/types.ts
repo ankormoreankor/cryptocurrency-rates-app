@@ -67,6 +67,17 @@ export interface CurrencyRate {
   diff24h: number;
 }
 
-export interface CurrencyRates {
-  CurrencyCode: CurrencyRate;
+export type CurrencyRates = Record<CurrencyCode, CurrencyRate>;
+
+export type CoinsRates = {
+  [coinName: string]: CurrencyRates;
+};
+
+export interface CurrentCoinRate {
+  coinName: string;
+  currencyCode: CurrencyCode;
+  rate: number;
+  ask: number;
+  bid: number;
+  diff24h: number;
 }

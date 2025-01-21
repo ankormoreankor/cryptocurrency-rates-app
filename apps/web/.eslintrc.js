@@ -117,7 +117,81 @@ module.exports = {
     "jsx-a11y/role-has-required-aria-props": "off",
     "jsx-a11y/anchor-is-valid": "off",
     "jsx-a11y/alt-text": "off",
+
+    "import-alias/import-alias": [
+      "error",
+      {
+        "aliases": [
+          {
+            "alias": "@pages",
+            "matcher": "^src/pages"
+          },
+          {
+            "alias": "@components",
+            "matcher": "^src/components"
+          },
+          {
+            "alias": "@hooks",
+            "matcher": "^src/hooks"
+          },
+          {
+            "alias": "@src",
+            "matcher": "^src"
+          },
+          {
+            "alias": "@root",
+            "matcher": "./"
+          }
+        ]
+      }
+    ],
   },
+  "import/order": [
+      "error",
+      {
+        "groups": [["builtin", "external"], "internal", "parent", ["sibling", "index"], "type"],
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        },
+        "newlines-between": "always",
+        "pathGroups": [
+          {
+            "pattern": "*.json",
+            "patternOptions": {
+              "matchBase": true
+            },
+            "group": "type",
+            "position": "after"
+          },
+          {
+            "pattern": "*.scss",
+            "patternOptions": {
+              "matchBase": true
+            },
+            "group": "type",
+            "position": "after"
+          },
+          {
+            "pattern": "@pages/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "@components/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "@hooks/**",
+            "group": "internal",
+            "position": "before"
+          },
+        ],
+        "pathGroupsExcludedImportTypes": ["builtin", "external", "type"],
+        "warnOnUnassignedImports": false
+      }
+    ],
   "overrides": [
     {
       "files": ["**/*.stories.*"],

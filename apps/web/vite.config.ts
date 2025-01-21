@@ -7,15 +7,12 @@ export default defineConfig({
   resolve: {
     alias: [
       { find: '@', replacement: resolve(__dirname, 'src') },
-      { find: '@libs', replacement: resolve(__dirname, 'src/lib') },
+      { find: '@lib', replacement: resolve(__dirname, 'src/lib') },
+      { find: '@src', replacement: resolve(__dirname, 'src/src') },
+      { find: '@pages', replacement: resolve(__dirname, 'src/pages') },
+      { find: '@components', replacement: resolve(__dirname, 'src/components') },
+      { find: '@hooks', replacement: resolve(__dirname, 'src/hooks') },
     ],
-    // {
-    //   '@root': resolve(__dirname),
-    //   '@src': resolve('src'),
-    //   '@pages': resolve('src', 'pages'),
-    //   '@components': resolve('src', 'components'),
-    //   '@hooks': resolve('src', 'hooks'),
-    // },
     preserveSymlinks: true,
   },
 });

@@ -26,14 +26,11 @@
 
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "@libs/*": ["./src/lib/*"],
-      "@root/*": ["./*"],
-      "@src/*": ["./src/*"],
+      "@lib/*": ["./src/lib/*"],
       "@pages/*": ["./src/pages/*"],
       "@components/*": ["./src/components/*"],
       "@hooks/*": ["./src/hooks/*"]
     }
   },
-  "include": ["src", "**/*.ts", "**/*.tsx", "vite-env.d.ts"]
+  "include": ["src", "**/*.ts", "**/*.tsx", "vite-env.d.ts", "../../shared/**/*.ts", "../../shared/**/*.tsx"]
 }
