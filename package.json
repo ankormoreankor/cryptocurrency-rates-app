@@ -13,6 +13,7 @@
     "apps/*"
   ],
   "devDependencies": {
+    "@types/node": "^22.10.7",
     "@types/bun": "latest"
   },
   "peerDependencies": {
