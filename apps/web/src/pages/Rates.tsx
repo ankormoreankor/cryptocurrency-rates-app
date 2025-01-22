@@ -2,7 +2,7 @@ import { observer } from 'mobx-react-lite';
 import { ReactNode, useEffect } from 'react';
 import { ratesStore } from '../../../../shared/stores/RatesStore';
 
-import { Column, ColumnDef, Row } from '@tanstack/react-table';
+import { Column, ColumnDef } from '@tanstack/react-table';
 import { DataTable } from '@components/DataTable';
 import { ArrowUpDown, MoveDown, MoveUp } from 'lucide-react';
 import { Button } from '@components/button';

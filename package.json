@@ -5,6 +5,7 @@
   "scripts": {
     "web:add": "bun install --filter 'web'",
     "web:dev": "bun --filter 'web' dev",
+    "web:build": "bun --filter 'web' build",
     "mobile:add": "bun install --filter 'mobile'",
     "mobile:start": "bun --filter 'mobile' start",
     "mobile:ios": "bun --filter 'mobile' ios"
