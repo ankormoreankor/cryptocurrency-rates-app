@@ -14,7 +14,7 @@ import { TableVirtuoso } from 'react-virtuoso';
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  tableHeight: number | string;
+  tableHeight?: number | string;
 }
 
 export const DataTable = <TData, TValue>({ columns, data, tableHeight }: DataTableProps<TData, TValue>) => {
@@ -34,7 +34,8 @@ export const DataTable = <TData, TValue>({ columns, data, tableHeight }: DataTab
   return (
     <div className="rounded-md border">
       <TableVirtuoso
-        style={{ height: tableHeight }}
+        style={{ height: tableHeight ?? '100%' }}
+        className=" rounded-[inherit]"
         totalCount={rows.length}
         components={{
           Table: Table,
@@ -48,7 +49,7 @@ export const DataTable = <TData, TValue>({ columns, data, tableHeight }: DataTab
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead key={header.id}>
+                  <TableHead key={header.id} style={{ width: `${header.getSize()}px` }}>
                     {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
                 );
@@ -67,7 +68,11 @@ export const DataTable = <TData, TValue>({ columns, data, tableHeight }: DataTab
 
             if (!isValidReactNode) return false;
 
-            return <TableCell key={cell.id}>{sellContent}</TableCell>;
+            return (
+              <TableCell key={cell.id} style={{ width: `${cell.column.getSize()}px` }}>
+                {sellContent}
+              </TableCell>
+            );
           });
         }}
       />

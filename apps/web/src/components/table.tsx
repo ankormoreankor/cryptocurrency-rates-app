@@ -1,6 +1,8 @@
 import * as React from 'react';
 
 import { cn } from '@lib/utils';
+import { formatNumber } from '../../../../shared/utils/format';
+import { PropsWithChildren } from 'react';
 
 const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(({ className, ...props }, ref) => (
   <table ref={ref} className={cn('w-full caption-bottom text-sm', className)} {...props} />
@@ -70,4 +72,14 @@ const TableCaption = React.forwardRef<HTMLTableCaptionElement, React.HTMLAttribu
 );
 TableCaption.displayName = 'TableCaption';
 
-export { Table, TableHeader, TableBody, TableFooter, TableHead, TableRow, TableCell, TableCaption };
+const CellNumberContent = ({ children, color = 'default' }: PropsWithChildren<{ color?: 'red' | 'green' | 'default' }>) => (
+  <>
+    {(typeof children === 'number' || typeof children === 'string') && (
+      <span className={cn(color === 'red' && 'text-red-600', color === 'green' && 'text-green-600')}>
+        {formatNumber(children)}
+      </span>
+    )}
+  </>
+);
+
+export { Table, TableHeader, TableBody, TableFooter, TableHead, TableRow, TableCell, TableCaption, CellNumberContent };

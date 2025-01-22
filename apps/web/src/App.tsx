@@ -16,7 +16,7 @@ export const App = () => (
     <BrowserRouter>
       <Routes>
         <Route index path="/rates" element={<Rates />} />
-        <Route path="/rates/:coinId" element={<CoinDetails />} />
+        <Route path="/rates/:coinName" element={<CoinDetails />} />
         <Route path="/" element={<Rates />} />
         <Route path="*" element={makeSuspended(<ErrorPage />)} />
       </Routes>
