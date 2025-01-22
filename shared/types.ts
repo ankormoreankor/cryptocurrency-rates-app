@@ -89,7 +89,6 @@ export interface CoinRateSummary {
 
 export interface CoinRateDetail {
   coinName: string;
-  currencyCode: CurrencyCode;
   rate: number;
   ask: number;
   bid: number;

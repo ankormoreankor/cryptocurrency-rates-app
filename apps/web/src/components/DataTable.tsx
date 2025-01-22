@@ -14,7 +14,7 @@ import { TableVirtuoso } from 'react-virtuoso';
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  tableHeight: number;
+  tableHeight: number | string;
 }
 
 export const DataTable = <TData, TValue>({ columns, data, tableHeight }: DataTableProps<TData, TValue>) => {
@@ -63,8 +63,8 @@ export const DataTable = <TData, TValue>({ columns, data, tableHeight }: DataTab
 
           return row.getVisibleCells().map((cell) => {
             const sellContent = cell.renderValue();
-
             const isValidReactNode = isValidElement(sellContent) || typeof sellContent === 'string';
+
             if (!isValidReactNode) return false;
 
             return <TableCell key={cell.id}>{sellContent}</TableCell>;

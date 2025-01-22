@@ -2,13 +2,15 @@ import { observer } from 'mobx-react-lite';
 import { ReactNode, useEffect } from 'react';
 import { ratesStore } from '../../../../shared/stores/RatesStore';
 
-import { Column, ColumnDef } from '@tanstack/react-table';
+import { Column, ColumnDef, Row } from '@tanstack/react-table';
 import { DataTable } from '@components/DataTable';
-import { ArrowUpDown } from 'lucide-react';
+import { ArrowUpDown, MoveDown, MoveUp } from 'lucide-react';
 import { Button } from '@components/button';
 import { CoinRateDetail, CurrencyCode, currencyCodes } from '../../../../shared/types';
 import { Input } from '@components/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@components/select';
+import { NavLink } from 'react-router';
+import clsx from 'clsx';
 
 type ColumnKeys = keyof CoinRateDetail;
 
@@ -18,7 +20,9 @@ const ColumnHeader = ({ column, title }: { column: Column<TableData, unknown>; t
   return (
     <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
       {title}
-      <ArrowUpDown className="ml-2 h-4 w-4" />
+      {column.getIsSorted() === 'asc' && <MoveUp className="ml-2 h-4 w-4" />}
+      {column.getIsSorted() === 'desc' && <MoveDown className="ml-2 h-4 w-4" />}
+      {!column.getIsSorted() && <ArrowUpDown className="ml-2 h-4 w-4" />}
     </Button>
   );
 };
@@ -29,24 +33,20 @@ export const columns: ColumnDef<TableData>[] = [
     header: ({ column }) => <ColumnHeader column={column} title="Coin Name" />,
   },
   {
-    accessorKey: 'currencyCode',
-    header: 'Currency',
+    accessorKey: 'rate',
+    header: 'Rate',
   },
   {
     accessorKey: 'ask',
-    header: ({ column }) => <ColumnHeader column={column} title="Ask" />,
+    header: 'Ask',
   },
   {
     accessorKey: 'bid',
-    header: ({ column }) => <ColumnHeader column={column} title="Bid" />,
-  },
-  {
-    accessorKey: 'rate',
-    header: ({ column }) => <ColumnHeader column={column} title="Rate" />,
+    header: 'Bid',
   },
   {
     accessorKey: 'diff24h',
-    header: ({ column }) => <ColumnHeader column={column} title="Diff 24h" />,
+    header: 'Diff 24h',
   },
 ];
 
@@ -58,44 +58,59 @@ export const Rates = observer(() => {
   return (
     <>
       {ratesStore.isLoading && <p>Loading...</p>}
+
       {!ratesStore.isLoading && ratesStore.filteredCoins !== undefined && (
-        <>
+        <div className="container h-full mx-auto py-10 grid grid-rows-[auto,1fr] gap-5">
           <header>
-            <h1>Cryptocurrency rates</h1>
+            <h1 className="mb-1 break-words text-4xl text-zinc-800">Cryptocurrency rates</h1>
+            <p className="mb-3 text-zinc-500">Table of cryptocurrency rates filtered by currency code.</p>
 
             <div className="flex justify-between gap-4">
-              <Input className="max-w-[50%]" onChange={(e) => ratesStore.setSearchQuery(e.target.value)} />
+              <Input
+                className="max-w-[50%]"
+                onChange={(e) => ratesStore.setSearchQuery(e.target.value)}
+                placeholder="Search"
+              />
 
               <Select onValueChange={(value) => ratesStore.setSelectedCurrency(value as CurrencyCode)}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder={ratesStore.selectedCurrency} />
+                <SelectTrigger className="w-[180px] font-medium">
+                  <SelectValue placeholder={ratesStore.selectedCurrency.toLocaleUpperCase()} />
                 </SelectTrigger>
                 <SelectContent>
-                  {currencyCodes.map((currency) => (
-                    <SelectItem key={currency} value={currency}>
-                      {currency}
-                    </SelectItem>
-                  ))}
+                  {currencyCodes
+                    .toSorted((a, b) => a.localeCompare(b))
+                    .map((currency) => (
+                      <SelectItem key={currency} value={currency} className="font-medium">
+                        {currency.toLocaleUpperCase()}
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
             </div>
           </header>
 
-          <div className="container mx-auto py-10">
-            <DataTable
-              columns={columns}
-              data={ratesStore.filteredCoins.map((coin) => ({
-                coinName: <span className=" p-4">{coin.coinName}</span>,
-                currencyCode: <span className=" p-4">{coin.currencyCode}</span>,
-                rate: <span className=" p-4">{coin.rate}</span>,
-                ask: <span className=" p-4">{coin.ask}</span>,
-                bid: <span className=" p-4">{coin.bid}</span>,
-                diff24h: <span className=" p-4">{coin.diff24h}</span>,
-              }))}
-              tableHeight={400}
-            />
-          </div>
-        </>
+          <DataTable
+            columns={columns}
+            data={ratesStore.filteredCoins.map((coin) => ({
+              coinName: (
+                <NavLink to={`/rates/${coin.coinName}`} className="font-medium inline-block w-full hover:text-blue-400">
+                  {coin.coinName.toLocaleUpperCase()}
+                </NavLink>
+              ),
+
+              rate: <span className="">{coin.rate}</span>,
+              ask: <span className="text-red-600 ">{coin.ask}</span>,
+              bid: <span className="text-green-600 ">{coin.bid}</span>,
+
+              diff24h: (
+                <span className={clsx(coin.diff24h > 0 && ' text-green-600', coin.diff24h < 0 && ' text-red-600')}>
+                  {coin.diff24h} {coin.diff24h > 0 ? '▲' : coin.diff24h < 0 ? '▼' : ''}
+                </span>
+              ),
+            }))}
+            tableHeight="100%"
+          />
+        </div>
       )}
     </>
   );

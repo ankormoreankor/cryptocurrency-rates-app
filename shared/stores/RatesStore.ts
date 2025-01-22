@@ -7,6 +7,8 @@ import type {
 } from '../types';
 import Fuse from 'fuse.js';
 
+const formatNumber = (n: number) => Number(n.toFixed(6));
+
 class RatesStore {
   data: CoinExchangeRates = {} as CoinExchangeRates;
   coinRateSummary: CoinRateSummary[] = [] as CoinRateSummary[];
@@ -37,10 +39,10 @@ class RatesStore {
               coinName,
               rates: ratesData.map(([currencyCode, data]) => ({
                 currencyCode: currencyCode as CurrencyCode,
-                rate: data.rate,
-                ask: data.ask,
-                bid: data.bid,
-                diff24h: data.diff24h,
+                rate: formatNumber(data.rate),
+                ask: formatNumber(data.ask),
+                bid: formatNumber(data.bid),
+                diff24h: formatNumber(data.diff24h),
               })),
             };
           })
@@ -87,7 +89,6 @@ class RatesStore {
 
         return {
           coinName: coin.coinName,
-          currencyCode: filteredCoinRates.currencyCode,
           rate: filteredCoinRates.rate,
           ask: filteredCoinRates.ask,
           bid: filteredCoinRates.bid,
