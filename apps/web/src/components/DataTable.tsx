@@ -8,7 +8,7 @@ import {
 } from '@tanstack/react-table';
 
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@components/table';
-import { useState } from 'react';
+import { isValidElement, useState } from 'react';
 import { TableVirtuoso } from 'react-virtuoso';
 
 interface DataTableProps<TData, TValue> {
@@ -61,11 +61,14 @@ export const DataTable = <TData, TValue>({ columns, data, tableHeight }: DataTab
 
           if (!row) return null;
 
-          return row
-            .getVisibleCells()
-            .map((cell) => (
-              <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-            ));
+          return row.getVisibleCells().map((cell) => {
+            const sellContent = cell.renderValue();
+
+            const isValidReactNode = isValidElement(sellContent) || typeof sellContent === 'string';
+            if (!isValidReactNode) return false;
+
+            return <TableCell key={cell.id}>{sellContent}</TableCell>;
+          });
         }}
       />
     </div>

@@ -1,71 +1,100 @@
-import { makeAutoObservable } from 'mobx';
-import type { CoinsRates, CurrencyCode, CurrentCoinRate } from '../types';
+import { makeAutoObservable, runInAction } from 'mobx';
+import type {
+  CoinExchangeRates,
+  CoinRateDetail,
+  CoinRateSummary,
+  CurrencyCode,
+} from '../types';
 import Fuse from 'fuse.js';
 
 class RatesStore {
-  data: CoinsRates = {} as CoinsRates;
-  coinRates: CurrentCoinRate[] = [] as CurrentCoinRate[];
+  data: CoinExchangeRates = {} as CoinExchangeRates;
+  coinRateSummary: CoinRateSummary[] = [] as CoinRateSummary[];
   isLoading = false;
   searchQuery: string = '';
-  selectedPair: CurrencyCode = 'usd';
+  selectedCurrency: CurrencyCode = 'usd';
 
   constructor() {
     makeAutoObservable(this);
   }
 
   async fetchCoins() {
-    this.isLoading = true;
+    this.setLoading(true);
 
     try {
       const response = await fetch(
         'https://app.youhodler.com/api/v3/rates/extended',
       );
-      const data: CoinsRates = await response.json();
+      const data: CoinExchangeRates = await response.json();
       this.data = data;
 
-      this.coinRates = Object.entries(data)
-        .map(([coinName, rates]) => {
-          const rate = rates[this.selectedPair];
+      runInAction(() => {
+        this.coinRateSummary = Object.entries(this.data)
+          .map(([coinName, rates]) => {
+            const ratesData = Object.entries(rates);
 
-          if (!rate) return null;
-
-          return {
-            coinName,
-            currencyCode: this.selectedPair,
-            rate: rate.rate,
-            ask: rate.ask,
-            bid: rate.bid,
-            diff24h: rate.diff24h,
-          };
-        })
-        .filter((coin): coin is CurrentCoinRate => coin !== null);
+            return {
+              coinName,
+              rates: ratesData.map(([currencyCode, data]) => ({
+                currencyCode: currencyCode as CurrencyCode,
+                rate: data.rate,
+                ask: data.ask,
+                bid: data.bid,
+                diff24h: data.diff24h,
+              })),
+            };
+          })
+          .toSorted((a, b) => a.coinName.localeCompare(b.coinName));
+      });
     } catch (error) {
       console.error('Failed to fetch coins:', error);
     } finally {
-      this.isLoading = false;
+      this.setLoading(false);
     }
+  }
+
+  setLoading(loading: boolean) {
+    this.isLoading = loading;
   }
 
   setSearchQuery(query: string) {
     this.searchQuery = query;
   }
 
-  setSelectedPair(pair: CurrencyCode) {
-    this.selectedPair = pair;
+  setSelectedCurrency(currency: CurrencyCode) {
+    this.selectedCurrency = currency;
   }
 
   get filteredCoins() {
-    const fuse = new Fuse(this.coinRates, {
+    const fuse = new Fuse(this.coinRateSummary, {
       keys: ['coinName'],
       threshold: 0.3,
     });
+
     const searchResults = this.searchQuery
       ? fuse.search(this.searchQuery).map((r) => r.item)
-      : this.coinRates;
+      : this.coinRateSummary;
 
-    return searchResults.filter(
-      (coin) => coin.currencyCode === this.selectedPair,
-    );
+    return searchResults
+      .map((coin) => {
+        const [filteredCoinRates] = coin.rates.filter(
+          (data) => data.currencyCode === this.selectedCurrency,
+        );
+
+        if (!filteredCoinRates) {
+          return false;
+        }
+
+        return {
+          coinName: coin.coinName,
+          currencyCode: filteredCoinRates.currencyCode,
+          rate: filteredCoinRates.rate,
+          ask: filteredCoinRates.ask,
+          bid: filteredCoinRates.bid,
+          diff24h: filteredCoinRates.diff24h,
+        };
+      })
+      .filter(Boolean) as CoinRateDetail[];
   }
 }
 
