@@ -13,7 +13,7 @@ type TableData = { [key in ColumnKeys]: ReactNode };
 export const columns: ColumnDef<TableData>[] = [
   {
     accessorKey: 'rate',
-    header: 'Rate',
+    header: 'Price',
     size: 120,
   },
   {
@@ -28,7 +28,7 @@ export const columns: ColumnDef<TableData>[] = [
   },
   {
     accessorKey: 'diff24h',
-    header: 'Diff 24h',
+    header: 'Day',
     size: 140,
   },
 ];
