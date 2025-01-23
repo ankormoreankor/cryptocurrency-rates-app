@@ -8,6 +8,7 @@ import type { ReactNode } from 'react';
 import { ErrorPage } from '@pages/ErrorPage/ErrorPage';
 import { Rates } from '@pages/Rates';
 import { CoinDetails } from '@pages/CoinDetails';
+import { MainLayout } from './layouts/MainLayout';
 
 const makeSuspended = (lazyNode: ReactNode) => <Suspense fallback={false}>{lazyNode}</Suspense>;
 
@@ -24,12 +25,14 @@ const RedirectToRates = () => {
 export const App = () => (
   <ErrorBoundary>
     <BrowserRouter>
-      <Routes>
-        <Route index path="/rates" element={<Rates />} />
-        <Route path="/rates/:coinName" element={makeSuspended(<CoinDetails />)} />
-        <Route path="/" element={<RedirectToRates />} />
-        <Route path="*" element={makeSuspended(<ErrorPage />)} />
-      </Routes>
+      <MainLayout>
+        <Routes>
+          <Route index path="/rates" element={<Rates />} />
+          <Route path="/rates/:coinName" element={makeSuspended(<CoinDetails />)} />
+          <Route path="/" element={<RedirectToRates />} />
+          <Route path="*" element={makeSuspended(<ErrorPage />)} />
+        </Routes>
+      </MainLayout>
     </BrowserRouter>
   </ErrorBoundary>
 );

@@ -9,7 +9,7 @@ import { Button } from '@components/button';
 import { CoinRateDetail, CurrencyCode, currencyCodes } from '../../../../shared/types';
 import { Input } from '@components/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@components/select';
-import { NavLink } from 'react-router';
+import { Link } from 'react-router';
 import { Diff } from '@components/Diff';
 import { CellNumberContent } from '@components/table';
 
@@ -105,9 +105,9 @@ export const Rates = observer(() => {
           columns={columns}
           data={ratesStore.filteredCoins.map((coin) => ({
             coinName: (
-              <NavLink to={`/rates/${coin.coinName}`} className="font-semibold inline-block w-full hover:text-blue-400">
+              <Link to={`/rates/${coin.coinName}`} className="font-semibold inline-block w-full hover:text-blue-400">
                 {coin.coinName.toLocaleUpperCase()}
-              </NavLink>
+              </Link>
             ),
 
             rate: <CellNumberContent>{coin.rate}</CellNumberContent>,
