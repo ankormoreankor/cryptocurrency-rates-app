@@ -1,10 +1,10 @@
-import { Header } from '@components/Header';
+import { Header, HeaderProps } from '@components/Header';
 import { PropsWithChildren } from 'react';
 
-export const MainLayout = ({ children }: PropsWithChildren) => {
+export const MainLayout = ({ children, headerProps }: PropsWithChildren<{ headerProps?: HeaderProps }>) => {
   return (
     <div className="grid grid-rows-[auto,1fr] h-full">
-      <Header />
+      <Header {...headerProps} />
       <main>{children}</main>
     </div>
   );

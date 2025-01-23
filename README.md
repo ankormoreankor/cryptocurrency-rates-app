@@ -1,50 +1,40 @@
-# React + TypeScript + Vite
+# FE test task
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### **React & TypeScript Frontend Developer Interview Task with State Management**
 
-Currently, two official plugins are available:
+## Objective
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Develop a single-page application using **React** and **TypeScript** that displays a list of cryptocurrency rates, fetching data from [**https://app.youhodler.com/api/v3/rates/extended**](https://app.youhodler.com/api/v3/rates/extended). The rates should be relative to the **USD.**
 
-## Expanding the ESLint configuration
+Each of the items in the list should be links leading to page dedicated for each coin (like `/btc` , `/etc`) where you should display all the information available from this endpoint (`rate` - medium price, `ask` - ask price, `bid` - bid price, `diff24h` - 24 hours movement of the price).
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Technical Requirements
 
-- Configure the top-level `parserOptions` property like this:
+1. **Framework & Language:** Build the application with **React** using functional components and hooks, entirely typed with **TypeScript**.
+2. **State Management:** Implement a state management library of your choice to efficiently manage the application's state.
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+    <aside>
+    📱 Although task is trivial and you may be tempted to just use react’s context or even just local state it is important to ***choose state*** management library and ***use it*** to complete the task
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+    </aside>
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+3. **API Integration and Type Safety:** Fetch cryptocurrency rates from the given API endpoint. Use **TypeScript** to ensure type safety for the API response, and handle errors gracefully.
+4. **Deployment & GitHub:** Deploy the application to a any hosting service (e.g., **Vercel**, **Netlify**, **GitHub Pages,** etc) and ensure your project code is on **GitHub**. Provide links to both the deployed application and the GitHub repository in your submission.
+5. **Design and UX:** design and the UX is intentionally left out from the task. Use your own taste.
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## Bonus Points
+
+- **MobX for State Management:** Earn bonus points by using **MobX** for state management, showcasing your ability to leverage its features for efficient state handling.
+- **Expo App Development:** Creating a version of your application with **React Native** using **Expo**, available through Expo Go ([**https://expo.dev/client**](https://expo.dev/client)).
+
+    <aside>
+    📱 If you choose to create **React Native** app - it ***would not be required for you to submit the web version of this app*** on Vercel or other hosting; although there would be extra points if you provide both native and web version of the app.
+
+    </aside>
+
+- **Extra functionality**: search, sorting, good overall design, etc.
+
+## Submission Guidelines
+
+- Provide the URL of your **GitHub** repository, ensuring it's public.
+- Include the **link to the deployed application** or provide expo **application url.**

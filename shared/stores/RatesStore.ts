@@ -6,6 +6,7 @@ import type {
   CurrencyCode,
 } from '../types';
 import Fuse from 'fuse.js';
+import { makePersistable } from 'mobx-persist-store';
 
 const formatNumber = (n: number) => Number(n.toFixed(6));
 
@@ -18,6 +19,16 @@ class RatesStore {
 
   constructor() {
     makeAutoObservable(this);
+    makePersistable(this, {
+      name: 'RatesStore',
+      properties: [
+        'data',
+        'coinRateSummary',
+        'searchQuery',
+        'selectedCurrency',
+      ],
+      storage: window.localStorage,
+    });
   }
 
   async fetchCoins() {

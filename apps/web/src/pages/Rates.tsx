@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Link } from 'react-router';
 import { Diff } from '@components/Diff';
 import { CellNumberContent } from '@components/table';
+import { MainLayout } from '@layouts/MainLayout';
 
 type ColumnKeys = keyof CoinRateDetail;
 
@@ -66,57 +67,59 @@ export const Rates = observer(() => {
   const isRenderContent = !isLoading && isDataAvailable;
 
   return (
-    <div className="container h-full mx-auto p-4 md:py-10 grid grid-rows-[auto,1fr] gap-5">
-      <header>
-        <h1 className="mb-1 break-words text-4xl text-zinc-800">Cryptocurrency rates</h1>
-        <p className="mb-3 text-zinc-500">Table of cryptocurrency rates filtered by currency code.</p>
+    <MainLayout>
+      <div className="container h-full mx-auto p-4 md:py-10 grid grid-rows-[auto,1fr] gap-5">
+        <header>
+          <h1 className="mb-1 break-words text-4xl text-zinc-800">Cryptocurrency rates</h1>
+          <p className="mb-3 text-zinc-500">Table of cryptocurrency rates filtered by currency code.</p>
+
+          {isRenderContent && (
+            <div className="flex justify-between gap-4">
+              <Input
+                className="max-w-[50%]"
+                onChange={(e) => ratesStore.setSearchQuery(e.target.value)}
+                placeholder="Search"
+              />
+
+              <Select onValueChange={(value) => ratesStore.setSelectedCurrency(value as CurrencyCode)}>
+                <SelectTrigger className="w-[180px] font-medium">
+                  <SelectValue placeholder={ratesStore.selectedCurrency.toLocaleUpperCase()} />
+                </SelectTrigger>
+                <SelectContent>
+                  {currencyCodes
+                    .toSorted((a, b) => a.localeCompare(b))
+                    .map((currency) => (
+                      <SelectItem key={currency} value={currency} className="font-medium">
+                        {currency.toLocaleUpperCase()}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+        </header>
+
+        {isLoading && <p className="place-self-center">Loading...</p>}
+        {!isDataAvailable && <p className="place-self-center">No data available.</p>}
 
         {isRenderContent && (
-          <div className="flex justify-between gap-4">
-            <Input
-              className="max-w-[50%]"
-              onChange={(e) => ratesStore.setSearchQuery(e.target.value)}
-              placeholder="Search"
-            />
+          <DataTable
+            columns={columns}
+            data={ratesStore.filteredCoins.map((coin) => ({
+              coinName: (
+                <Link to={`/rates/${coin.coinName}`} className="font-semibold inline-block w-full hover:text-blue-400">
+                  {coin.coinName.toLocaleUpperCase()}
+                </Link>
+              ),
 
-            <Select onValueChange={(value) => ratesStore.setSelectedCurrency(value as CurrencyCode)}>
-              <SelectTrigger className="w-[180px] font-medium">
-                <SelectValue placeholder={ratesStore.selectedCurrency.toLocaleUpperCase()} />
-              </SelectTrigger>
-              <SelectContent>
-                {currencyCodes
-                  .toSorted((a, b) => a.localeCompare(b))
-                  .map((currency) => (
-                    <SelectItem key={currency} value={currency} className="font-medium">
-                      {currency.toLocaleUpperCase()}
-                    </SelectItem>
-                  ))}
-              </SelectContent>
-            </Select>
-          </div>
+              rate: <CellNumberContent>{coin.rate}</CellNumberContent>,
+              ask: <CellNumberContent color="red">{coin.ask}</CellNumberContent>,
+              bid: <CellNumberContent color="green">{coin.bid}</CellNumberContent>,
+              diff24h: <Diff diff={coin.diff24h} />,
+            }))}
+          />
         )}
-      </header>
-
-      {isLoading && <p className="place-self-center">Loading...</p>}
-      {!isDataAvailable && <p className="place-self-center">No data available.</p>}
-
-      {isRenderContent && (
-        <DataTable
-          columns={columns}
-          data={ratesStore.filteredCoins.map((coin) => ({
-            coinName: (
-              <Link to={`/rates/${coin.coinName}`} className="font-semibold inline-block w-full hover:text-blue-400">
-                {coin.coinName.toLocaleUpperCase()}
-              </Link>
-            ),
-
-            rate: <CellNumberContent>{coin.rate}</CellNumberContent>,
-            ask: <CellNumberContent color="red">{coin.ask}</CellNumberContent>,
-            bid: <CellNumberContent color="green">{coin.bid}</CellNumberContent>,
-            diff24h: <Diff diff={coin.diff24h} />,
-          }))}
-        />
-      )}
-    </div>
+      </div>
+    </MainLayout>
   );
 });

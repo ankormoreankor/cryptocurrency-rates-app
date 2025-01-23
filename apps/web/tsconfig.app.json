@@ -29,7 +29,8 @@
       "@lib/*": ["./src/lib/*"],
       "@pages/*": ["./src/pages/*"],
       "@components/*": ["./src/components/*"],
-      "@hooks/*": ["./src/hooks/*"]
+      "@layouts/*": ["./src/layouts/*"],
+      "@icons/*": ["./src/icons/*"]
     }
   },
   "include": ["src", "**/*.ts", "**/*.tsx", "vite-env.d.ts", "../../shared/**/*.ts", "../../shared/**/*.tsx"]
